@@ -4,9 +4,12 @@
 #include"sock.h"
 
 
-/***************************************************
- * Run as a thread. Process the request
- * ************************************************/
+/**************************************************************/
+ /* Run as a thread. Receive the data from network and process 
+  * the request ,query and send the page data
+  * Parameters: the socket connected to the client
+  *		the epoll_event processed with current thread */
+ /*************************************************************/
 void accept_request(int client,struct epoll_event* even)
 {
 	signal(13,SIG_IGN);//ignore the sigpipe
@@ -47,6 +50,7 @@ void accept_request(int client,struct epoll_event* even)
 	sprintf(path, "htdocs%s", url);
 	char *page_info = (char*)malloc(MAX_SIZE_OF_PAGE);//the content of the html page
 	page_info[0] = '\0';
+	//request the homepage
 	if (path[strlen(path) - 1] == '/')
 	{
 		strcat(path, "index.html");
@@ -63,10 +67,11 @@ void accept_request(int client,struct epoll_event* even)
 			serve_file(client, path);
 		}
 	}
+	//request the page stored in database
 	else
 	{
+		//try to get data from cache first. if failed then try to get it in database
 		char *page_name = url + 1;//such as "BeiJing.html"
-		//////////////////get data from cache///////////////////////////////////////////////////////////////////////
 		memcached_st *memc = memcache_init();
 		if (query_memcache(memc,page_info,page_name) < 0)
 		{
@@ -87,8 +92,12 @@ void accept_request(int client,struct epoll_event* even)
 	close(client);
 	epoll_ctl(epollfd, EPOLL_CTL_DEL, client, even);
 }
-///////////////////////////////////////////////////////////////////////
-//send the http header  and then the content of the page
+
+/**********************************************************************/
+/* send the http header  and the content of the page
+ * Parameters: client socket 
+ *	       the buffer to send */
+/**********************************************************************/
 void header_and_cat(int client, char* page_info)
 {
 	int numchars = 1;
@@ -101,8 +110,6 @@ void header_and_cat(int client, char* page_info)
 	socket_send(client, page_info);
 
 }
-
-
 
 /**********************************************************************/
 /* Inform the client that a request it has made has a problem.
@@ -331,7 +338,6 @@ struct epoll_event eventList[MAX_EVENTS];
 int main(void)
 {
 	int server_sock = -1;
-
 	server_sock = startup();
 	//init epoll
 	struct epoll_event event;
