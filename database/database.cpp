@@ -3,8 +3,8 @@
  /* query info by page_name from the database
   * Parameters: the buffer to save query result
   *		the key for query
-  * return val  0:success -1:error
-/ ***********************************************/
+  * return val  0:success -1:error */
+ /***********************************************/
 int query_database(char* page_info,char* page_name)
 {
 			char sql[100] = "select page from weather where cityname=";
