@@ -1,7 +1,10 @@
 #include"memc.h"
-/***********************************************
- * Initialize and set memcached
- * ********************************************/
+/********************************************************/
+ /*Initialize and set memcached
+  *Return val:a pointer to memcached_st structure that
+  *	      will then be used by other libmemcached 
+  *	      functions to communicate with the server */
+ /*******************************************************/
 memcached_st* memcache_init()
 {
 		memcached_st *memc;
@@ -21,12 +24,13 @@ memcached_st* memcache_init()
 		memcached_behavior_set(memc, MEMCACHED_BEHAVIOR_SERVER_FAILURE_LIMIT, 5);
 		return memc;
 }
-/****************************************************
- * Query data from memcached
- * return val 0 success     -1 failed
- * ************************************************/
-//
-
+/*****************************************************************/
+ /* Query data from memcached
+  * Parameters:memcached_st pointer to communicate with the server
+  *	       the buffer to save query result
+  *	       the key for query
+  * Return val 0 success     -1 failed */
+ /****************************************************************/
 int query_memcache(memcached_st* memc,char* page_info,char* page_name)
 {
 		size_t value_length = 0;
@@ -47,9 +51,9 @@ int query_memcache(memcached_st* memc,char* page_info,char* page_name)
 		}
 }
 
-/****************************************
- * free the memcached
- * *************************************/
+/****************************************/
+/ * free the memcached*/
+/ * *************************************/
 void memcache_destroy(memcached_st* memc)
 {
 	memcached_free(memc);
