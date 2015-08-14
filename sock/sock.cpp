@@ -1,9 +1,10 @@
 #include"sock.h"
 
-/*************************************************
- * In EPOLLET mode fd is noblock.The function send
- * data with NoBlock mode
- * *********************************************/
+/*************************************************/
+ /* send data to NoBlock socket descriptor
+  * Parameters: the client socket descriptor
+  *		the buffer to send
+ /***********************************************/
 void socket_send(int fd,char* buf)
 {
 	int nsend;
@@ -24,10 +25,12 @@ void socket_send(int fd,char* buf)
 	}
 }
 
-/*****************************************************
- * The function accept the connect from the sevfd
- * and add the new socketfd to epoll
- * **************************************************/
+/*****************************************************/
+ /* The function accept the connect from the sevfd
+  * and add the new socketfd to epoll
+  * Parameters: the server socket descriptor
+  * Return va:  1 success   -1 failed  */
+  /***************************************************/
 
 int  AcceptConn(int srvfd)
 {
@@ -90,9 +93,10 @@ int startup()
 	printf("server is running at port %d\n",SER_PORT);
 	return(httpd);
 }
-/***************************************************
- *set fd on NoBlock mode
- ***************************************************/
+/***************************************************/
+/*set  socket descriptor on NoBlock mode
+ *Parameter: socket descriptor. */
+ /***************************************************/
 void setSockNonBlock(int sock)
 {
 	int flags;
