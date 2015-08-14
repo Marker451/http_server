@@ -4,7 +4,9 @@ A simple http server for studty
 这是一个参考Tinyhttp写的 简单http服务器
 
 //////////////////
+
 整体结构：
+
 	网络IO模块》  使用EPOLL机制进行IO复用，处理网络IO事件。
 	
 	数据处理模块》采用多线程模型，每个线程处理一个链接。使用boost扩展库threadpool的线程池。
@@ -17,6 +19,7 @@ A simple http server for studty
 	
 
 //////////////////
+
 主要接口功能：
 	accept_request：处理线程
 	
@@ -35,6 +38,7 @@ A simple http server for studty
 	socket_send,socket_recv:  非阻塞接收发送函数
 
 //////////////////
+
 主要工作流程
 	
 
@@ -58,6 +62,7 @@ A simple http server for studty
 	memcached中，最后用header_and_cat 发送响应头及页面信息
 
 //////////////////
+
 环境及测试
 
 	运行环境 CentOs  libevent  memcached   boost的扩展库pthreadpool mysql
@@ -69,6 +74,7 @@ A simple http server for studty
 	等原因，没能得到有参考意义的数据。
 	
 //////////////////
+
 其他	
 	在高并发下仍有不稳定的bug
 
