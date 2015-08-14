@@ -1,76 +1,80 @@
 # http_server
 A simple http server for studty
 
-
-ÕâÊÇÒ»¸ö»ùÓÚTinyhttpÐ´µÄ ¼òµ¥http·þÎñÆ÷
-////////////////////////
-ÕûÌå½á¹¹£ºÖ»´¦Àí¾²Ì¬ÍøÒ³¡¢ÍøÒ³Êý¾Ý´æ´¢ÔÚmysqlÖÐ¡¢Ê¹ÓÃmemcached×ö»º´æ¡¢·þÎñÆ÷Ö÷ÌåÉè¼Æ³É°ëÍ¬²½/°ëÒì²½Ä£Ê½
-          Ê¹ÓÃepoll ºÍboostµÄÀ©Õ¹¿âthreadpool.
-	  Éè¼Æ³ÉÁ½¼¶Ò³Ãæ£¬Ò»¼¶Ò³ÃæÊÇ´æ´¢ÔÚhtdocsÖÐµÄ htmlÒ³Ãæ£¬¶þ¼¶¾²Ì¬Ò³Ãæ´æ´¢ÔÚÊý¾Ý¿âÖÐ
+è¿™æ˜¯ä¸€ä¸ªå‚è€ƒTinyhttpå†™çš„ ç®€å•httpæœåŠ¡å™¨
 
 //////////////////
-Ö÷Òª½Ó¿Ú¹¦ÄÜ£º
-	accept_request£º´¦ÀíÏß³Ì
+æ•´ä½“ç»“æž„ï¼š
+	ç½‘ç»œIOæ¨¡å—ã€‹  ä½¿ç”¨EPOLLæœºåˆ¶è¿›è¡ŒIOå¤ç”¨ï¼Œå¤„ç†ç½‘ç»œIOäº‹ä»¶ã€‚
 	
-	memcache_inti £º³õÊ¼»¯memcached Ä¬ÈÏÓÐÁ½¸ö»º´æ·þÎñ½áµã£¬¼àÌýÔÚ¶Ë¿Ú11211 11212
+	æ•°æ®å¤„ç†æ¨¡å—ã€‹é‡‡ç”¨å¤šçº¿ç¨‹æ¨¡åž‹ï¼Œæ¯ä¸ªçº¿ç¨‹å¤„ç†ä¸€ä¸ªé“¾æŽ¥ã€‚ä½¿ç”¨boostæ‰©å±•åº“threadpoolçš„çº¿ç¨‹æ± ã€‚
 	
-	query_memcache: ´Ó»º´æÖÐ²éÑ¯Êý¾Ý
-	
-	query_database: ´ÓÊý¾Ý¿âÖÐ²éÑ¯Êý¾Ý
-	
-	header_and_cat: ·¢ËÍÏìÓ¦Í·¼°ÍøÒ³Êý¾Ý
-	
-	startup       : Æô¶¯·þÎñÆ÷³ÌÐò£¬³õÊ¼»¯¼àÌýÌ×½Ó×Ö£¬°ó¶¨£¬¼àÌý
-	
-	AcceptConn    £ºµ±epoll_wait ·µ»ØÊÂ¼þÎª¼àÌýÌ×½Ó×Ö¿É¶ÁÊ±£¬½ÓÊÕÐÂÁ¬½Ó£¬²¢¼ÓÈë¼àÌý¶ÓÁÐ
-	
-	socket_send,socket_recv:  ·Ç×èÈû½ÓÊÕ·¢ËÍº¯Êý
+	æ•°æ®ç¼“å­˜ã€‹    ä½¿ç”¨memcached ç¼“å­˜æ•°æ®åº“æŸ¥è¯¢ç»“æžœï¼Œæé«˜æŸ¥è¯¢æ•ˆçŽ‡ã€‚
 
-/////////////////////////
-Ö÷Òª¹¤×÷Á÷³Ì
+	æ•°æ®å­˜å‚¨ã€‹    åŽç«¯æ•°æ®çš„å­˜å‚¨ä½¿ç”¨mysql
+
+	æµ‹è¯•ã€‹        ä½¿ç”¨http_load,å’Œwebbenchå·¥å…·è¿›è¡Œé«˜å¹¶å‘æµ‹è¯•ã€‚
 	
 
-	Ö÷³ÌÐòÆô¶¯ µ÷ÓÃstartup ÉèÖÃºÃ¼àÌý¶Ë¿Ú
-
-	³õÊ¼»¯epoll£¬½«listenÌ×½Ó×Ö ¼ÓÈë¼àÌý¶ÓÁÐ£¬¼àÌýEPOLLINÊÂ¼þ£¬²¢Ê¹ÓÃETÄ£Ê½
-
-	epoll_wait·µ»ØÊ±£¬¼ì²éÊÇ·ñÎªlistenÌ×½Ó×ÖÉÏµÄ¿É¶ÁÊÂ¼þ£¬Èç¹ûÊÇ£¬ÔòÑ­»·µ÷ÓÃ£¨´¦Àí¶à¸öÁ¬½ÓÍ¬Ê±µ½À´£©
-	µ÷ÓÃAcceptConn ½ÓÊÜÁ¬½Ó£¬²¢½«ÐÂÁ¬½Ó¼ÓÈë¼àÌý¶ÓÁÐ¡£
-
-	Èç¹ûepoll_wait ·µ»ØµÄ·ÇlistenÉÏµÄÊÂ¼þ£¬ÔòÎªÒÑ½¨Á¢µÄÁ¬½Ó¿É¶Á£¬´ËÊ±ÉèÖÃÏß³Ìaccept_requestÀ´´¦Àí,
-	²¢½«Ïß³ÌÇëÇó¼ÓÈëthreadpoolµÄÇëÇó¶ÓÁÐ
-
-accept_requestÖÐµÄ´¦ÀíÂß¼­
-
-	¶ÁÈ¡socketÉÏµÄÐÅÏ¢£¬·ÖÎöÇëÇóÀàÐÍ£¬¼°ÇëÇóµÄ×ÊÔ´Ãû³Æ¡£
+//////////////////
+ä¸»è¦æŽ¥å£åŠŸèƒ½ï¼š
+	accept_requestï¼šå¤„ç†çº¿ç¨‹
 	
-	ÈôÇëÇóÖ÷Ò³£¬Ôò¶ÁÈ¡htdocsÎÄ¼þ¼ÐÖÐµÄhtmlÎÄ¼þ£¬²¢·â×°·µ»Ø
+	memcache_inti ï¼šåˆå§‹åŒ–memcached é»˜è®¤æœ‰ä¸¤ä¸ªç¼“å­˜æœåŠ¡ç»“ç‚¹ï¼Œç›‘å¬åœ¨ç«¯å£11211 11212
 	
-	ÈôÇëÇóµÄ×ÊÔ´Îª¶þ¼¶Ò³Ãæ£¬ÔòÏÈ´ÓmemcachedÖÐ²éÑ¯£¬Èç¹ûÃüÖÐ£¬½«Ò³ÃæÐÅÏ¢´æ´¢ÔÚpage_infoÖÐ¡£
+	query_memcache: ä»Žç¼“å­˜ä¸­æŸ¥è¯¢æ•°æ®
 	
-	Èç¹ûÃ»ÓÐÃüÖÐ£¬ÔòÈ¥mysqlÖÐ²éÑ¯£¬ÔÚÊý¾Ý¿âÖÐ²éÑ¯µ½Ò³ÃæÐÅÏ¢Ö®ºó´æµ½page_infoÖÐ£¬²¢°ÑÐÅÏ¢Í¬²½setµ½
-	memcachedÖÐ£¬×îºóÓÃheader_and_cat ·¢ËÍÏìÓ¦Í·¼°Ò³ÃæÐÅÏ¢
-
-////////////////
-»·¾³¼°²âÊÔ
-
-	ÔËÐÐ»·¾³ CentOs  libevent  memcached   boostµÄÀ©Õ¹¿âpthreadpool mysql
-
-	Ê¹ÓÃÁË http_load ºÍwebbench ½øÐÐ²âÊÔ£¬ÔÚÎÒµÄ»úÆ÷ÉÏ£¨¸÷ÖÖ·þÎñ¶¼´îÔÚ±¾µØ£©±¾µØÁ¬½Ó²âÊÔ´ó¸ÅÄÜ´ïµ½
-
-	 3000 fetch/sec ×óÓÒ¡£°Ñ¿Í»§¶Ë²âÊÔ·Åµ½ÆäËû»ú×ÓÉÏ£¬¾ÖÓòÍøÄÚÁ¬½Ó²âÊÔ¡£ÓÉÓÚÍøÂç£¬²»Í¬»ú×ÓÓ²¼þÅäÖÃ
-
-	µÈÔ­Òò£¬Ã»ÄÜµÃµ½ÓÐ²Î¿¼ÒâÒåµÄÊý¾Ý£¨¸ß²¢·¢²âµÄÊ±ºò°ÑÍ¬Ñ§µÄÀÏÒ¯»úÅÜËÀÁË¡£¡£¡£¡£¡££©
+	query_database: ä»Žæ•°æ®åº“ä¸­æŸ¥è¯¢æ•°æ®
 	
-///////////////
-ÆäËû	
-	ÔÚ¸ß²¢·¢ÏÂÈÔÓÐ²»ÎÈ¶¨µÄbug
+	header_and_cat: å‘é€å“åº”å¤´åŠç½‘é¡µæ•°æ®
+	
+	startup       : å¯åŠ¨æœåŠ¡å™¨ç¨‹åºï¼Œåˆå§‹åŒ–ç›‘å¬å¥—æŽ¥å­—ï¼Œç»‘å®šï¼Œç›‘å¬
+	
+	AcceptConn    ï¼šå½“epoll_wait è¿”å›žäº‹ä»¶ä¸ºç›‘å¬å¥—æŽ¥å­—å¯è¯»æ—¶ï¼ŒæŽ¥æ”¶æ–°è¿žæŽ¥ï¼Œå¹¶åŠ å…¥ç›‘å¬é˜Ÿåˆ—
+	
+	socket_send,socket_recv:  éžé˜»å¡žæŽ¥æ”¶å‘é€å‡½æ•°
 
-	µ±Ç°°æ±¾£¬Ä¬ÈÏÍøÒ³Êý¾ÝÒÑ¾­´æ´¢ÔÚÊý¾Ý¿âÖÐ£¬ÆäÊµÎÒÏë¸ãµÄÊÇÒ»¸öÌìÆøÔ¤±¨µÄ·þÎñ
+//////////////////
+ä¸»è¦å·¥ä½œæµç¨‹
+	
 
-	£¨ÎÒ¼ÙÏëÎÒµÄÍøÕ¾»ðµ½±¬£¬Ã¿ÃëÉÏÍòµÄÓÃ»§À´²é¿´ÌìÆø£¬ºÃ	°É¡£¡£¡££©
+	ä¸»ç¨‹åºå¯åŠ¨ è°ƒç”¨startup è®¾ç½®å¥½ç›‘å¬ç«¯å£
 
-	ÔÙÅÜÒ»¸öÏß³Ì£¬ÓÃÍøÂçÅÀ³æ¶¨Ê±´ÓÍøÂçÉÏÅÀÈ¡¸÷³ÇÊÐÌìÆø	ÐÅÏ¢£¬È»ºó´¦Àí´æÈëÊý¾Ý¿â¡£
+	åˆå§‹åŒ–epollï¼Œå°†listenå¥—æŽ¥å­— åŠ å…¥ç›‘å¬é˜Ÿåˆ—ï¼Œç›‘å¬EPOLLINäº‹ä»¶ï¼Œå¹¶ä½¿ç”¨ETæ¨¡å¼
 
-	ºó±ßÒª°ÑÕâ²¿·ÖÕûÀí¼ÓÈë£¬²¢ÇÒ¶Ô¸ß²¢·¢¼ÌÐøÓÅ»¯¡£
+	epoll_waitè¿”å›žæ—¶ï¼Œæ£€æŸ¥æ˜¯å¦ä¸ºlistenå¥—æŽ¥å­—ä¸Šçš„å¯è¯»äº‹ä»¶ï¼Œå¦‚æžœæ˜¯ï¼Œåˆ™å¾ªçŽ¯è°ƒç”¨ï¼ˆå¤„ç†å¤šä¸ªè¿žæŽ¥åŒæ—¶åˆ°æ¥ï¼‰
+	è°ƒç”¨AcceptConn æŽ¥å—è¿žæŽ¥ï¼Œå¹¶å°†æ–°è¿žæŽ¥åŠ å…¥ç›‘å¬é˜Ÿåˆ—ã€‚
+
+	å¦‚æžœepoll_wait è¿”å›žçš„éžlistenä¸Šçš„äº‹ä»¶ï¼Œåˆ™ä¸ºå·²å»ºç«‹çš„è¿žæŽ¥å¯è¯»ï¼Œæ­¤æ—¶è®¾ç½®çº¿ç¨‹accept_requestæ¥å¤„ç†,
+	å¹¶å°†çº¿ç¨‹è¯·æ±‚åŠ å…¥threadpoolçš„è¯·æ±‚é˜Ÿåˆ—accept_requestä¸­çš„å¤„ç†é€»è¾‘
+
+	è¯»å–socketä¸Šçš„ä¿¡æ¯ï¼Œåˆ†æžè¯·æ±‚ç±»åž‹ï¼ŒåŠè¯·æ±‚çš„èµ„æºåç§°ã€‚
+	
+	è‹¥è¯·æ±‚ä¸»é¡µï¼Œåˆ™è¯»å–htdocsæ–‡ä»¶å¤¹ä¸­çš„htmlæ–‡ä»¶ï¼Œå¹¶å°è£…è¿”å›ž
+	
+	è‹¥è¯·æ±‚çš„èµ„æºä¸ºäºŒçº§é¡µé¢ï¼Œåˆ™å…ˆä»Žmemcachedä¸­æŸ¥è¯¢ï¼Œå¦‚æžœå‘½ä¸­ï¼Œå°†é¡µé¢ä¿¡æ¯å­˜å‚¨åœ¨page_infoä¸­ã€‚
+	
+	å¦‚æžœæ²¡æœ‰å‘½ä¸­ï¼Œåˆ™åŽ»mysqlä¸­æŸ¥è¯¢ï¼Œåœ¨æ•°æ®åº“ä¸­æŸ¥è¯¢åˆ°é¡µé¢ä¿¡æ¯ä¹‹åŽå­˜åˆ°page_infoä¸­ï¼Œå¹¶æŠŠä¿¡æ¯åŒæ­¥setåˆ°
+	memcachedä¸­ï¼Œæœ€åŽç”¨header_and_cat å‘é€å“åº”å¤´åŠé¡µé¢ä¿¡æ¯
+
+//////////////////
+çŽ¯å¢ƒåŠæµ‹è¯•
+
+	è¿è¡ŒçŽ¯å¢ƒ CentOs  libevent  memcached   boostçš„æ‰©å±•åº“pthreadpool mysql
+
+	ä½¿ç”¨äº† http_load å’Œwebbench è¿›è¡Œæµ‹è¯•ï¼Œåœ¨æˆ‘çš„æœºå™¨ä¸Šï¼ˆå„ç§æœåŠ¡éƒ½æ­åœ¨æœ¬åœ°ï¼‰æœ¬åœ°è¿žæŽ¥æµ‹è¯•å¤§æ¦‚èƒ½è¾¾åˆ°
+
+	 3000 fetch/sec å·¦å³ã€‚æŠŠå®¢æˆ·ç«¯æµ‹è¯•æ”¾åˆ°å…¶ä»–æœºå­ä¸Šï¼Œå±€åŸŸç½‘å†…è¿žæŽ¥æµ‹è¯•ã€‚ç”±äºŽç½‘ç»œï¼Œä¸åŒæœºå­ç¡¬ä»¶é…ç½®
+
+	ç­‰åŽŸå› ï¼Œæ²¡èƒ½å¾—åˆ°æœ‰å‚è€ƒæ„ä¹‰çš„æ•°æ®ã€‚
+	
+//////////////////
+å…¶ä»–	
+	åœ¨é«˜å¹¶å‘ä¸‹ä»æœ‰ä¸ç¨³å®šçš„bug
+
+	å½“å‰ç‰ˆæœ¬ï¼Œé»˜è®¤ç½‘é¡µæ•°æ®å·²ç»å­˜å‚¨åœ¨æ•°æ®åº“ä¸­ï¼Œå…¶å®žæˆ‘æƒ³æžçš„æ˜¯ä¸€ä¸ªå¤©æ°”é¢„æŠ¥çš„æœåŠ¡
+
+	å†è·‘ä¸€ä¸ªçº¿ç¨‹ï¼Œç”¨ç½‘ç»œçˆ¬è™«å®šæ—¶ä»Žç½‘ç»œä¸Šçˆ¬å–å„åŸŽå¸‚å¤©æ°”ä¿¡æ¯ï¼Œç„¶åŽå¤„ç†å­˜å…¥æ•°æ®åº“ã€‚
+
+	åŽè¾¹è¦æŠŠè¿™éƒ¨åˆ†æ•´ç†åŠ å…¥ï¼Œå¹¶ä¸”å¯¹é«˜å¹¶å‘ç»§ç»­ä¼˜åŒ–ã€‚
 	
